@@ -5,3 +5,4 @@ __pycache__/
 *.db
 chroma_db/
 chroma_db_test/
+chroma_db_test_retriever/
