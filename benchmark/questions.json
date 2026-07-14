@@ -1,0 +1,72 @@
+[
+  {
+    "id": "q1",
+    "session_type": "teach",
+    "convention": "test_naming",
+    "question": "I'm adding tests for the users/profile.py module. What should I name the test file?",
+    "expected_pattern": "test_profile_spec.py"
+  },
+  {
+    "id": "q2",
+    "session_type": "teach",
+    "convention": "error_handling",
+    "question": "Write a function that raises an error if a discount code is invalid.",
+    "expected_pattern": "AppError"
+  },
+  {
+    "id": "q3",
+    "session_type": "teach",
+    "convention": "docstring",
+    "question": "Write a docstring for a function that calculates tax.",
+    "expected_pattern": "Args:.*Returns:"
+  },
+  {
+    "id": "q4",
+    "session_type": "teach",
+    "convention": "imports",
+    "question": "Write the import section for a new file that uses logging, fastapi, and a local errors module.",
+    "expected_pattern": "stdlib_then_thirdparty_then_local"
+  },
+  {
+    "id": "q5",
+    "session_type": "teach",
+    "convention": "logging",
+    "question": "How do I log an info message inside a new function in this codebase?",
+    "expected_pattern": "logger.getLogger(__name__)"
+  },
+  {
+    "id": "q6",
+    "session_type": "test_recall",
+    "convention": "test_naming",
+    "question": "I'm adding tests for a new shipping.py module. What should I name the test file?",
+    "expected_pattern": "test_shipping_spec.py"
+  },
+  {
+    "id": "q7",
+    "session_type": "test_recall",
+    "convention": "error_handling",
+    "question": "Write a function that raises an error if a shipping address is missing.",
+    "expected_pattern": "AppError"
+  },
+  {
+    "id": "q8",
+    "session_type": "test_recall",
+    "convention": "docstring",
+    "question": "Write a docstring for a function that validates an email address.",
+    "expected_pattern": "Args:.*Returns:"
+  },
+  {
+    "id": "q9",
+    "session_type": "test_recall",
+    "convention": "imports",
+    "question": "Write the import section for a new file that uses datetime, requests, and a local users module.",
+    "expected_pattern": "stdlib_then_thirdparty_then_local"
+  },
+  {
+    "id": "q10",
+    "session_type": "test_recall",
+    "convention": "logging",
+    "question": "How do I log a warning inside a new function for the refunds module?",
+    "expected_pattern": "logger.getLogger(__name__)"
+  }
+]
