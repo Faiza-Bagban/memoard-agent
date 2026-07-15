@@ -1,0 +1,11 @@
+order,id,session_type,convention,passed,answer
+1,q1,teach,test_naming,True,The test file should be named `test_profile_spec.py`.
+2,q2,teach,error_handling,True,The test file for the profile.py module should indeed be `test_profile_spec.py`.   To answer your main question: Here's how you can write the function according to the conventions:  ```python from app
+3,q3,teach,docstring,True,"Here is the docstring for the `calculate_tax` function according to the Google style guide:  ```python def calculate_tax(income):     """"""     Calculates the tax based on the provided income.      Args"
+4,q4,teach,imports,False,Here's how you can write the import section according to the conventions:  ```python import logging  # stdlib  from third_party.fastapi import FastAPI  # assuming this is where FastAPI lives  from app
+5,q5,teach,logging,True,"To log an info message inside a new function, you would use the `logger` object as follows:  ```python import logging  # ...  def my_new_function():     """"""     A brief description of what this functi"
+6,q6,test_recall,test_naming,True,"According to the convention mentioned earlier, test files must be named `test_<module>_spec.py`. Since you're adding tests for the shipping.py module, the test file should be named `test_shipping_spec"
+7,q7,test_recall,error_handling,True,Here's how you can write the function according to the conventions:  ```python from app.errors import AppError  # assuming this is where AppError lives  def validate_shipping_address(shipping_address)
+8,q8,test_recall,docstring,True,"Here is the docstring for the `validate_email_address` function according to the Google-style guide and the conventions used in this codebase:  ```python def validate_email_address(email):     """"""    "
+9,q9,test_recall,imports,True,"Based on the convention of ordering imports as stdlib first, then third-party, then local, each group alphabetized with a blank line between groups, here's how you can write the import section for a n"
+10,q10,test_recall,logging,True,"Here's how you can log a warning inside a new function in the refunds module:  ```python import logging  # ...  logger = logging.getLogger(__name__)  def handle_refund(refund_id):     """"""     Handles "

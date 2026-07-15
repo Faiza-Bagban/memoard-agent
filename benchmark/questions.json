@@ -3,35 +3,35 @@
     "id": "q1",
     "session_type": "teach",
     "convention": "test_naming",
-    "question": "I'm adding tests for the users/profile.py module. What should I name the test file?",
+    "question": "In this codebase, test files must be named test_<module>_spec.py. I'm adding tests for the profile.py module. What should I name the test file?",
     "expected_pattern": "test_profile_spec.py"
   },
   {
     "id": "q2",
     "session_type": "teach",
     "convention": "error_handling",
-    "question": "Write a function that raises an error if a discount code is invalid.",
+    "question": "In this codebase, errors must always be raised using a custom AppError(message, code) class, never a bare Exception or ValueError. Write a function that raises an error if a discount code is invalid.",
     "expected_pattern": "AppError"
   },
   {
     "id": "q3",
     "session_type": "teach",
     "convention": "docstring",
-    "question": "Write a docstring for a function that calculates tax.",
+    "question": "In this codebase, every function must have a Google-style docstring with Args: and Returns: sections. Write a docstring for a function that calculates tax.",
     "expected_pattern": "Args:.*Returns:"
   },
   {
     "id": "q4",
     "session_type": "teach",
     "convention": "imports",
-    "question": "Write the import section for a new file that uses logging, fastapi, and a local errors module.",
+    "question": "In this codebase, imports must be ordered: stdlib first, then third-party, then local, each group alphabetized with a blank line between groups. Write the import section for a new file that uses logging, fastapi, and a local errors module.",
     "expected_pattern": "stdlib_then_thirdparty_then_local"
   },
   {
     "id": "q5",
     "session_type": "teach",
     "convention": "logging",
-    "question": "How do I log an info message inside a new function in this codebase?",
+    "question": "In this codebase, always log using logger = logging.getLogger(__name__), never print(). How do I log an info message inside a new function in this codebase?",
     "expected_pattern": "logger.getLogger(__name__)"
   },
   {
