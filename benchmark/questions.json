@@ -1,72 +1,37 @@
 [
-  {
-    "id": "q1",
-    "session_type": "teach",
-    "convention": "test_naming",
-    "question": "In this codebase, test files must be named test_<module>_spec.py. I'm adding tests for the profile.py module. What should I name the test file?",
-    "expected_pattern": "test_profile_spec.py"
-  },
-  {
-    "id": "q2",
-    "session_type": "teach",
-    "convention": "error_handling",
-    "question": "In this codebase, errors must always be raised using a custom AppError(message, code) class, never a bare Exception or ValueError. Write a function that raises an error if a discount code is invalid.",
-    "expected_pattern": "AppError"
-  },
-  {
-    "id": "q3",
-    "session_type": "teach",
-    "convention": "docstring",
-    "question": "In this codebase, every function must have a Google-style docstring with Args: and Returns: sections. Write a docstring for a function that calculates tax.",
-    "expected_pattern": "Args:.*Returns:"
-  },
-  {
-    "id": "q4",
-    "session_type": "teach",
-    "convention": "imports",
-    "question": "In this codebase, imports must be ordered: stdlib first, then third-party, then local, each group alphabetized with a blank line between groups. Write the import section for a new file that uses logging, fastapi, and a local errors module.",
-    "expected_pattern": "stdlib_then_thirdparty_then_local"
-  },
-  {
-    "id": "q5",
-    "session_type": "teach",
-    "convention": "logging",
-    "question": "In this codebase, always log using logger = logging.getLogger(__name__), never print(). How do I log an info message inside a new function in this codebase?",
-    "expected_pattern": "logger.getLogger(__name__)"
-  },
-  {
-    "id": "q6",
-    "session_type": "test_recall",
-    "convention": "test_naming",
-    "question": "I'm adding tests for a new shipping.py module. What should I name the test file?",
-    "expected_pattern": "test_shipping_spec.py"
-  },
-  {
-    "id": "q7",
-    "session_type": "test_recall",
-    "convention": "error_handling",
-    "question": "Write a function that raises an error if a shipping address is missing.",
-    "expected_pattern": "AppError"
-  },
-  {
-    "id": "q8",
-    "session_type": "test_recall",
-    "convention": "docstring",
-    "question": "Write a docstring for a function that validates an email address.",
-    "expected_pattern": "Args:.*Returns:"
-  },
-  {
-    "id": "q9",
-    "session_type": "test_recall",
-    "convention": "imports",
-    "question": "Write the import section for a new file that uses datetime, requests, and a local users module.",
-    "expected_pattern": "stdlib_then_thirdparty_then_local"
-  },
-  {
-    "id": "q10",
-    "session_type": "test_recall",
-    "convention": "logging",
-    "question": "How do I log a warning inside a new function for the refunds module?",
-    "expected_pattern": "logger.getLogger(__name__)"
-  }
+  {"id": "s0_q1", "session": 0, "session_type": "baseline", "convention": "test_naming", "question": "I'm adding tests for a new discounts.py module. What should I name the test file?", "expected_pattern": "test_discounts_spec.py"},
+  {"id": "s0_q2", "session": 0, "session_type": "baseline", "convention": "error_handling", "question": "Write a function that raises an error if a discount code is invalid.", "expected_pattern": "AppError"},
+  {"id": "s0_q3", "session": 0, "session_type": "baseline", "convention": "docstring", "question": "Write a docstring for a function that applies a discount to an order.", "expected_pattern": "Args:.*Returns:"},
+  {"id": "s0_q4", "session": 0, "session_type": "baseline", "convention": "imports", "question": "Write the import section for a new file that uses datetime, requests, and a local discounts module.", "expected_pattern": "stdlib_then_thirdparty_then_local"},
+  {"id": "s0_q5", "session": 0, "session_type": "baseline", "convention": "logging", "question": "How do I log an info message inside a new function for the discounts module?", "expected_pattern": "logger.getLogger(__name__)"},
+
+  {"id": "s1_q1", "session": 1, "session_type": "teach", "convention": "test_naming", "question": "In this codebase, test files must be named test_<module>_spec.py. I'm adding tests for the notifications.py module. What should I name the test file?", "expected_pattern": "test_notifications_spec.py"},
+  {"id": "s1_q2", "session": 1, "session_type": "teach", "convention": "error_handling", "question": "In this codebase, errors must always be raised using a custom AppError(message, code) class, never a bare Exception or ValueError. Write a function that raises an error if a notification fails to send.", "expected_pattern": "AppError"},
+  {"id": "s1_q3", "session": 1, "session_type": "teach", "convention": "docstring", "question": "In this codebase, every function must have a Google-style docstring with Args: and Returns: sections. Write a docstring for a function that sends a notification.", "expected_pattern": "Args:.*Returns:"},
+  {"id": "s1_q4", "session": 1, "session_type": "teach", "convention": "imports", "question": "In this codebase, imports must be ordered: stdlib first, then third-party, then local, each group alphabetized with a blank line between groups. Write the import section for a new file that uses logging, fastapi, and a local notifications module.", "expected_pattern": "stdlib_then_thirdparty_then_local"},
+  {"id": "s1_q5", "session": 1, "session_type": "teach", "convention": "logging", "question": "In this codebase, always log using logger = logging.getLogger(__name__), never print(). How do I log an info message inside a new function for the notifications module?", "expected_pattern": "logger.getLogger(__name__)"},
+
+  {"id": "s2_q1", "session": 2, "session_type": "recall", "convention": "test_naming", "question": "I'm adding tests for a new inventory.py module. What should I name the test file?", "expected_pattern": "test_inventory_spec.py"},
+  {"id": "s2_q2", "session": 2, "session_type": "recall", "convention": "error_handling", "question": "Write a function that raises an error if an inventory item is out of stock.", "expected_pattern": "AppError"},
+  {"id": "s2_q3", "session": 2, "session_type": "recall", "convention": "docstring", "question": "Write a docstring for a function that updates inventory stock levels.", "expected_pattern": "Args:.*Returns:"},
+  {"id": "s2_q4", "session": 2, "session_type": "recall", "convention": "imports", "question": "Write the import section for a new file that uses os, requests, and a local inventory module.", "expected_pattern": "stdlib_then_thirdparty_then_local"},
+  {"id": "s2_q5", "session": 2, "session_type": "recall", "convention": "logging", "question": "How do I log a warning inside a new function for the inventory module?", "expected_pattern": "logger.getLogger(__name__)"},
+
+  {"id": "s3_q1", "session": 3, "session_type": "recall", "convention": "test_naming", "question": "I'm adding tests for a new webhooks.py module. What should I name the test file?", "expected_pattern": "test_webhooks_spec.py"},
+  {"id": "s3_q2", "session": 3, "session_type": "recall", "convention": "error_handling", "question": "Write a function that raises an error if a webhook payload is malformed.", "expected_pattern": "AppError"},
+  {"id": "s3_q3", "session": 3, "session_type": "recall", "convention": "docstring", "question": "Write a docstring for a function that verifies a webhook signature.", "expected_pattern": "Args:.*Returns:"},
+  {"id": "s3_q4", "session": 3, "session_type": "recall", "convention": "imports", "question": "Write the import section for a new file that uses json, httpx, and a local webhooks module.", "expected_pattern": "stdlib_then_thirdparty_then_local"},
+  {"id": "s3_q5", "session": 3, "session_type": "recall", "convention": "logging", "question": "How do I log an error inside a new function for the webhooks module?", "expected_pattern": "logger.getLogger(__name__)"},
+
+  {"id": "s4_q1", "session": 4, "session_type": "recall", "convention": "test_naming", "question": "I'm adding tests for a new subscriptions.py module. What should I name the test file?", "expected_pattern": "test_subscriptions_spec.py"},
+  {"id": "s4_q2", "session": 4, "session_type": "recall", "convention": "error_handling", "question": "Write a function that raises an error if a subscription has expired.", "expected_pattern": "AppError"},
+  {"id": "s4_q3", "session": 4, "session_type": "recall", "convention": "docstring", "question": "Write a docstring for a function that renews a subscription.", "expected_pattern": "Args:.*Returns:"},
+  {"id": "s4_q4", "session": 4, "session_type": "recall", "convention": "imports", "question": "Write the import section for a new file that uses datetime, pydantic, and a local subscriptions module.", "expected_pattern": "stdlib_then_thirdparty_then_local"},
+  {"id": "s4_q5", "session": 4, "session_type": "recall", "convention": "logging", "question": "How do I log an info message inside a new function for the subscriptions module?", "expected_pattern": "logger.getLogger(__name__)"},
+
+  {"id": "s5_q1", "session": 5, "session_type": "recall", "convention": "test_naming", "question": "I'm adding tests for a new invoices.py module. What should I name the test file?", "expected_pattern": "test_invoices_spec.py"},
+  {"id": "s5_q2", "session": 5, "session_type": "recall", "convention": "error_handling", "question": "Write a function that raises an error if an invoice total is negative.", "expected_pattern": "AppError"},
+  {"id": "s5_q3", "session": 5, "session_type": "recall", "convention": "docstring", "question": "Write a docstring for a function that generates an invoice PDF.", "expected_pattern": "Args:.*Returns:"},
+  {"id": "s5_q4", "session": 5, "session_type": "recall", "convention": "imports", "question": "Write the import section for a new file that uses re, fastapi, and a local invoices module.", "expected_pattern": "stdlib_then_thirdparty_then_local"},
+  {"id": "s5_q5", "session": 5, "session_type": "recall", "convention": "logging", "question": "How do I log a warning inside a new function for the invoices module?", "expected_pattern": "logger.getLogger(__name__)"}
 ]

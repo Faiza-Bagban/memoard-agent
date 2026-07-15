@@ -27,7 +27,7 @@ class OllamaClient:
         response = requests.post(
             f"{self.host}/api/generate",
             json={"model": self.model, "prompt": prompt, "stream": False},
-            timeout=120,
+            timeout=300,
         )
         response.raise_for_status()
         return response.json()["response"]
