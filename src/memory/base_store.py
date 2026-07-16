@@ -50,6 +50,7 @@ class BaseMemoryStore:
                 "access_count": item.access_count,
                 "source_session": item.source_session or "",
                 "convention_tag": item.convention_tag or "",
+                "consolidated": item.consolidated,
             }],
         )
         return item.id
@@ -105,3 +106,33 @@ class BaseMemoryStore:
             None
         """
         self.collection.delete(ids=[item_id])
+
+    def get_unconsolidated(self) -> List[dict]:
+        """Return all items in this store that have not yet been consolidated.
+
+        Args:
+            None
+
+        Returns:
+            A list of dicts with id, content, and metadata for unconsolidated items.
+        """
+        results = self.collection.get(where={"consolidated": False})
+        items = []
+        for i in range(len(results["ids"])):
+            items.append({
+                "id": results["ids"][i],
+                "content": results["documents"][i],
+                "metadata": results["metadatas"][i],
+            })
+        return items
+
+    def mark_consolidated(self, item_id: str) -> None:
+        """Mark a memory item as consolidated so it isn't reprocessed.
+
+        Args:
+            item_id: The id of the item to mark.
+
+        Returns:
+            None
+        """
+        self.collection.update(ids=[item_id], metadatas=[{"consolidated": True}])

@@ -30,3 +30,4 @@ class MemoryItem(BaseModel):
     last_accessed: Optional[datetime] = None
     source_session: Optional[str] = None
     convention_tag: Optional[str] = None
+    consolidated: bool = False
