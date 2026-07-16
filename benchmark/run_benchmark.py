@@ -1,5 +1,6 @@
 import json
 import csv
+import argparse
 from collections import defaultdict
 
 from src.agent.agent import MemoardAgent
@@ -19,21 +20,21 @@ def load_questions(path: str = "benchmark/questions.json") -> list:
         return json.load(f)
 
 
-def run_benchmark(persist_path: str = "./chroma_db_benchmark", output_csv: str = "benchmark/results.csv") -> None:
+def run_benchmark(persist_path: str, output_csv: str, memory_enabled: bool) -> None:
     """Run every question through the agent in session order and score each answer.
 
     Args:
         persist_path: Where to store the agent's memory for this run.
         output_csv: Where to write the per-question results.
+        memory_enabled: Whether the agent uses memory retrieval and storage.
 
     Returns:
         None
     """
     questions = load_questions()
-    agent = MemoardAgent(persist_path=persist_path, session_id="benchmark_run")
+    agent = MemoardAgent(persist_path=persist_path, session_id="benchmark_run", memory_enabled=memory_enabled)
 
     rows = []
-   
     for i, q in enumerate(questions, start=1):
         print(f"[{i}/{len(questions)}] session={q['session']} {q['session_type']} - {q['convention']}")
         try:
@@ -55,7 +56,6 @@ def run_benchmark(persist_path: str = "./chroma_db_benchmark", output_csv: str =
             "answer": answer_text,
         })
 
-
     with open(output_csv, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=["order", "id", "session", "session_type", "convention", "passed", "answer"])
         writer.writeheader()
@@ -73,4 +73,19 @@ def run_benchmark(persist_path: str = "./chroma_db_benchmark", output_csv: str =
 
 
 if __name__ == "__main__":
-    run_benchmark()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--no-memory", action="store_true", help="Run without memory (ablation baseline)")
+    args = parser.parse_args()
+
+    if args.no_memory:
+        run_benchmark(
+            persist_path="./chroma_db_ablation",
+            output_csv="benchmark/results_no_memory.csv",
+            memory_enabled=False,
+        )
+    else:
+        run_benchmark(
+            persist_path="./chroma_db_benchmark",
+            output_csv="benchmark/results.csv",
+            memory_enabled=True,
+        )
