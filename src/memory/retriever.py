@@ -35,6 +35,7 @@ class MemoryRetriever:
             results = store.retrieve(query, k=k_per_store)
             for r in results:
                 r["memory_type"] = store.memory_type.value
+                store.touch(r["id"])
                 candidates.append(r)
 
         for c in candidates:

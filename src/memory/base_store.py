@@ -136,3 +136,19 @@ class BaseMemoryStore:
             None
         """
         self.collection.update(ids=[item_id], metadatas=[{"consolidated": True}])
+
+    def touch(self, item_id: str) -> None:
+        """Increment access count and update last-accessed time for a memory item.
+
+        Args:
+            item_id: The id of the item that was just accessed.
+
+        Returns:
+            None
+        """
+        existing = self.collection.get(ids=[item_id])
+        if not existing["ids"]:
+            return
+        metadata = existing["metadatas"][0]
+        metadata["access_count"] = metadata.get("access_count", 0) + 1
+        self.collection.update(ids=[item_id], metadatas=[metadata])
