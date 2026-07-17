@@ -152,3 +152,24 @@ class BaseMemoryStore:
         metadata = existing["metadatas"][0]
         metadata["access_count"] = metadata.get("access_count", 0) + 1
         self.collection.update(ids=[item_id], metadatas=[metadata])
+
+    def get_by_convention_tag(self, tag: str) -> List[dict]:
+        """Return all items in this store tagged with a specific convention.
+
+        Args:
+            tag: The convention_tag to filter by.
+
+        Returns:
+            A list of dicts with id, content, and metadata for matching items.
+        """
+        if not tag:
+            return []
+        results = self.collection.get(where={"convention_tag": tag})
+        items = []
+        for i in range(len(results["ids"])):
+            items.append({
+                "id": results["ids"][i],
+                "content": results["documents"][i],
+                "metadata": results["metadatas"][i],
+            })
+        return items

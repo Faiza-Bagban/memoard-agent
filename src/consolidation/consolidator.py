@@ -8,6 +8,10 @@ from src.memory.stores import EpisodicStore, SemanticStore, ProceduralStore
 class Consolidator:
     """Distills raw episodic memories into durable semantic facts and procedural skills.
 
+    Uses convention-tag-based supersession: when a new fact is extracted for a
+    tag that already has a stored fact, the old one is replaced rather than
+    duplicated, preventing memory drift and contradiction buildup.
+
     Args:
         None
 
@@ -22,7 +26,7 @@ class Consolidator:
         self.llm = OllamaClient()
 
     def consolidate(self) -> dict:
-        """Run one consolidation pass over all unconsolidated episodic memories.
+        """Run one consolidation pass, grouped by convention tag with supersession.
 
         Args:
             None
@@ -33,51 +37,70 @@ class Consolidator:
         unconsolidated = self.episodic.get_unconsolidated()
 
         if not unconsolidated:
-            return {"episodes_processed": 0, "facts_extracted": 0, "skills_extracted": 0}
+            return {"episodes_processed": 0, "facts_extracted": 0, "skills_extracted": 0, "facts_superseded": 0}
 
-        episodes_text = "\n\n".join(f"- {item['content']}" for item in unconsolidated)
+        by_tag = {}
+        for item in unconsolidated:
+            tag = item["metadata"].get("convention_tag", "") or "untagged"
+            by_tag.setdefault(tag, []).append(item)
 
-        prompt = (
-            "You are reviewing raw conversation logs from a coding assistant agent. "
-            "Extract durable, reusable knowledge from these logs.\n\n"
-            f"Logs:\n{episodes_text}\n\n"
-            "Return ONLY a JSON object with this exact structure, no other text:\n"
-            '{"facts": ["fact 1", "fact 2"], "skills": ["skill 1", "skill 2"]}\n\n'
-            "Facts = durable rules or conventions learned (e.g. naming rules, error patterns). "
-            "Skills = reusable how-to steps for accomplishing a task type. "
-            "Keep each item short (one sentence). Only include genuinely reusable knowledge."
-        )
+        total_facts = 0
+        total_skills = 0
+        total_superseded = 0
 
-        raw_response = self.llm.generate(prompt)
-        extracted = self._parse_response(raw_response)
+        for tag, items in by_tag.items():
+            episodes_text = "\n\n".join(f"- {item['content']}" for item in items)
 
-        facts_written = 0
-        for fact in extracted.get("facts", []):
-            self.semantic.write(MemoryItem(
-                id="",
-                content=fact,
-                memory_type=MemoryType.SEMANTIC,
-                importance=0.8,
-            ))
-            facts_written += 1
+            prompt = (
+                "You are reviewing raw conversation logs from a coding assistant agent, "
+                f"all related to the same topic/convention: '{tag}'.\n\n"
+                f"Logs:\n{episodes_text}\n\n"
+                "Return ONLY a JSON object with this exact structure, no other text:\n"
+                '{"facts": ["fact 1"], "skills": ["skill 1"]}\n\n'
+                "Extract at most ONE durable fact and ONE reusable skill that best represents "
+                "the correct, consistent rule across these logs. If logs disagree, prefer the "
+                "most specific and most repeated version. Keep each item short (one sentence)."
+            )
 
-        skills_written = 0
-        for skill in extracted.get("skills", []):
-            self.procedural.write(MemoryItem(
-                id="",
-                content=skill,
-                memory_type=MemoryType.PROCEDURAL,
-                importance=0.8,
-            ))
-            skills_written += 1
+            raw_response = self.llm.generate(prompt)
+            extracted = self._parse_response(raw_response)
+
+            if tag != "untagged":
+                for existing in self.semantic.get_by_convention_tag(tag):
+                    self.semantic.delete(existing["id"])
+                    total_superseded += 1
+                for existing in self.procedural.get_by_convention_tag(tag):
+                    self.procedural.delete(existing["id"])
+                    total_superseded += 1
+
+            for fact in extracted.get("facts", []):
+                self.semantic.write(MemoryItem(
+                    id="",
+                    content=fact,
+                    memory_type=MemoryType.SEMANTIC,
+                    importance=0.8,
+                    convention_tag=tag if tag != "untagged" else None,
+                ))
+                total_facts += 1
+
+            for skill in extracted.get("skills", []):
+                self.procedural.write(MemoryItem(
+                    id="",
+                    content=skill,
+                    memory_type=MemoryType.PROCEDURAL,
+                    importance=0.8,
+                    convention_tag=tag if tag != "untagged" else None,
+                ))
+                total_skills += 1
 
         for item in unconsolidated:
             self.episodic.mark_consolidated(item["id"])
 
         return {
             "episodes_processed": len(unconsolidated),
-            "facts_extracted": facts_written,
-            "skills_extracted": skills_written,
+            "facts_extracted": total_facts,
+            "skills_extracted": total_skills,
+            "facts_superseded": total_superseded,
         }
 
     def _parse_response(self, raw_response: str) -> dict:
