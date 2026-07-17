@@ -1,0 +1,146 @@
+[
+  {
+    "timestamp": "2026-07-17T05:05:30.807994+00:00",
+    "persist_path": "./chroma_db_sleep",
+    "consolidation": {
+      "episodes_processed": 5,
+      "facts_extracted": 5,
+      "skills_extracted": 5,
+      "facts_superseded": 0
+    },
+    "forgetting": {
+      "episodic": {
+        "reviewed": 5,
+        "forgotten": 0
+      },
+      "semantic": {
+        "reviewed": 5,
+        "forgotten": 0
+      },
+      "procedural": {
+        "reviewed": 5,
+        "forgotten": 0
+      }
+    }
+  },
+  {
+    "timestamp": "2026-07-17T05:12:47.288532+00:00",
+    "persist_path": "./chroma_db_sleep",
+    "consolidation": {
+      "episodes_processed": 5,
+      "facts_extracted": 4,
+      "skills_extracted": 4,
+      "facts_superseded": 10
+    },
+    "forgetting": {
+      "episodic": {
+        "reviewed": 10,
+        "forgotten": 0
+      },
+      "semantic": {
+        "reviewed": 4,
+        "forgotten": 0
+      },
+      "procedural": {
+        "reviewed": 4,
+        "forgotten": 0
+      }
+    }
+  },
+  {
+    "timestamp": "2026-07-17T05:20:30.508205+00:00",
+    "persist_path": "./chroma_db_sleep",
+    "consolidation": {
+      "episodes_processed": 5,
+      "facts_extracted": 5,
+      "skills_extracted": 5,
+      "facts_superseded": 8
+    },
+    "forgetting": {
+      "episodic": {
+        "reviewed": 15,
+        "forgotten": 0
+      },
+      "semantic": {
+        "reviewed": 5,
+        "forgotten": 0
+      },
+      "procedural": {
+        "reviewed": 5,
+        "forgotten": 0
+      }
+    }
+  },
+  {
+    "timestamp": "2026-07-17T05:26:54.398736+00:00",
+    "persist_path": "./chroma_db_sleep",
+    "consolidation": {
+      "episodes_processed": 5,
+      "facts_extracted": 5,
+      "skills_extracted": 5,
+      "facts_superseded": 10
+    },
+    "forgetting": {
+      "episodic": {
+        "reviewed": 20,
+        "forgotten": 0
+      },
+      "semantic": {
+        "reviewed": 5,
+        "forgotten": 0
+      },
+      "procedural": {
+        "reviewed": 5,
+        "forgotten": 0
+      }
+    }
+  },
+  {
+    "timestamp": "2026-07-17T05:34:22.210198+00:00",
+    "persist_path": "./chroma_db_sleep",
+    "consolidation": {
+      "episodes_processed": 5,
+      "facts_extracted": 5,
+      "skills_extracted": 5,
+      "facts_superseded": 10
+    },
+    "forgetting": {
+      "episodic": {
+        "reviewed": 25,
+        "forgotten": 0
+      },
+      "semantic": {
+        "reviewed": 5,
+        "forgotten": 0
+      },
+      "procedural": {
+        "reviewed": 5,
+        "forgotten": 0
+      }
+    }
+  },
+  {
+    "timestamp": "2026-07-17T05:41:13.848732+00:00",
+    "persist_path": "./chroma_db_sleep",
+    "consolidation": {
+      "episodes_processed": 5,
+      "facts_extracted": 5,
+      "skills_extracted": 5,
+      "facts_superseded": 10
+    },
+    "forgetting": {
+      "episodic": {
+        "reviewed": 30,
+        "forgotten": 0
+      },
+      "semantic": {
+        "reviewed": 5,
+        "forgotten": 0
+      },
+      "procedural": {
+        "reviewed": 5,
+        "forgotten": 0
+      }
+    }
+  }
+]

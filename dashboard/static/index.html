@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MemoardAgent — Memory Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --paper: #EFE7D6;
+    --paper-2: #E5DCC8;
+    --paper-3: #F5EFE0;
+    --ink: #1A1A1A;
+    --ink-dim: #6B5E45;
+    --border: #8A7F66;
+    --navy: #1B3A6B;
+    --rust: #A0522D;
+    --forest: #3F5D3A;
+    --gold: #8C6D1F;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Courier Prime', monospace;
+}
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
+
+.control-panel {
+    background: var(--paper-2);
+    border-bottom: 1px dashed var(--border);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 36px;
+}
+.panel-label { font-size: 0.68rem; letter-spacing: 0.12em; color: var(--ink-dim); margin-bottom: 6px; }
+.panel-group { display: flex; flex-direction: column; }
+#pathInput {
+    background: var(--paper-3);
+    color: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 7px 10px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.82rem;
+    width: 230px;
+}
+.switch-row { display: flex; gap: 6px; }
+.switch-btn {
+    background: var(--paper-3);
+    color: var(--ink-dim);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 7px 12px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+}
+.switch-btn.active { color: var(--paper-3); background: var(--navy); border-color: var(--navy); }
+#loadBtn {
+    background: var(--navy);
+    color: var(--paper-3);
+    border: none;
+    border-radius: 2px;
+    padding: 9px 22px;
+    font-weight: 700;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.76rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    align-self: flex-end;
+}
+#loadBtn:hover { filter: brightness(1.15); }
+
+.page-wrap { padding: 34px 40px; display: flex; justify-content: center; }
+.page {
+    position: relative;
+    width: 100%;
+    max-width: 980px;
+    background: var(--paper-3);
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+    padding: 40px 48px;
+}
+
+.eyebrow { font-size: 0.7rem; letter-spacing: 0.16em; color: var(--ink-dim); }
+.hero-title { font-family: 'Special Elite', monospace; font-size: 2.8rem; color: var(--ink); margin: 6px 0 4px 0; line-height: 1.05; }
+.subtitle { color: var(--ink-dim); font-size: 0.85rem; margin: 0 0 28px 0; }
+
+hr.section-divider { border: none; border-top: 1px dashed var(--border); margin: 26px 0; }
+
+.chart-frame { border: 1px solid var(--border); border-radius: 4px; padding: 16px 10px 6px 10px; background: var(--paper-2); }
+.wave-caption { font-size: 0.75rem; color: var(--ink-dim); margin-top: 8px; }
+
+.sleep-entry { border: 1px dashed var(--border); border-radius: 3px; padding: 12px 16px; margin-bottom: 8px; background: var(--paper-2); display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.sleep-time { font-size: 0.7rem; color: var(--ink-dim); min-width: 150px; }
+.sleep-stat { font-size: 0.75rem; }
+.sleep-stat .num { font-family: 'Special Elite', monospace; font-weight: 700; }
+
+.stats-row { display: flex; gap: 52px; }
+.stat-num { font-family: 'Special Elite', monospace; font-size: 2.6rem; line-height: 1; }
+.stat-label { font-size: 0.68rem; color: var(--ink-dim); margin-top: 4px; letter-spacing: 0.08em; }
+
+.tabs { display: flex; gap: 2px; margin: 30px 0 18px 0; border-bottom: 1px dashed var(--border); }
+.tab-btn {
+    background: transparent; border: none; cursor: pointer;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.78rem;
+    color: var(--ink-dim);
+    padding: 9px 14px;
+    border-bottom: 2px solid transparent;
+    letter-spacing: 0.04em;
+}
+.tab-btn.active { color: var(--ink); font-weight: 700; border-bottom-color: var(--navy); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.mem-chip {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    color: var(--ink-dim);
+    display: inline-block;
+}
+.mem-chip.consolidated { color: var(--rust); border-color: var(--rust); }
+
+.ep-card { border: 1px dashed var(--border); border-radius: 3px; padding: 14px 18px; margin-bottom: 10px; background: var(--paper-2); }
+.ep-label { font-size: 0.65rem; letter-spacing: 0.12em; color: var(--rust); margin-bottom: 3px; }
+.ep-q { font-size: 0.82rem; color: var(--ink-dim); margin-bottom: 8px; line-height: 1.5; }
+.ep-divider { border: none; border-top: 1px dashed var(--border); margin: 8px 0; }
+.ep-a { font-size: 0.85rem; color: var(--ink); line-height: 1.55; }
+.ep-meta { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+.sem-card { border: 1px solid var(--forest); border-radius: 3px; padding: 16px 20px; margin-bottom: 10px; background: var(--paper-2); }
+.sem-idx { font-size: 0.65rem; color: var(--forest); letter-spacing: 0.1em; margin-bottom: 6px; }
+.sem-text { font-family: 'Special Elite', monospace; font-size: 1.15rem; color: var(--ink); line-height: 1.35; }
+.sem-meta { margin-top: 10px; display: flex; gap: 8px; }
+
+.proc-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.proc-chip { border: 1px solid var(--gold); border-radius: 3px; padding: 12px 14px; flex: 1 1 260px; background: var(--paper-2); }
+.proc-icon { color: var(--gold); font-size: 0.68rem; letter-spacing: 0.06em; margin-bottom: 6px; }
+.proc-text { font-size: 0.82rem; color: var(--ink); line-height: 1.45; }
+
+.empty-state { color: var(--ink-dim); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="control-panel">
+    <div class="panel-group">
+        <div class="panel-label">SOURCE PATH</div>
+        <input id="pathInput" type="text" value="./chroma_db_sleep" />
+    </div>
+    <div class="panel-group">
+        <div class="panel-label">BENCHMARK RUN</div>
+        <div class="switch-row">
+            <button class="switch-btn active" data-run="sleep" onclick="selectRun('sleep')">MEM+SLEEP</button>
+            <button class="switch-btn" data-run="memory" onclick="selectRun('memory')">MEM ONLY</button>
+            <button class="switch-btn" data-run="no_memory" onclick="selectRun('no_memory')">NO MEM</button>
+        </div>
+    </div>
+    <button id="loadBtn" onclick="loadAll()">LOAD MEMORY</button>
+</div>
+
+<div class="page-wrap">
+    <div class="page">
+        <div class="eyebrow">MEMORY ARCHITECTURE — PORTFOLIO PROJECT</div>
+        <div class="hero-title">MemoardAgent</div>
+        <p class="subtitle">a long-horizon coding agent with typed memory, sleep-cycle consolidation, and forgetting</p>
+
+        <div class="eyebrow">CONVENTION RECALL — RECORDED BY SESSION</div>
+        <div class="chart-frame"><div id="waveContainer"></div></div>
+        <p class="wave-caption">taught once. retained across every session after.</p>
+
+        <hr class="section-divider" />
+
+        <div class="eyebrow">SLEEP CYCLE LOG — CONSOLIDATION HISTORY</div>
+        <div id="sleepLogContainer" style="margin-bottom: 20px;"><p class="empty-state">no sleep log found.</p></div>
+
+        <hr class="section-divider" />
+
+        <div class="stats-row">
+            <div><div class="stat-num" style="color:var(--rust)" id="statEpisodic">–</div><div class="stat-label">EPISODIC MEMORIES</div></div>
+            <div><div class="stat-num" style="color:var(--forest)" id="statSemantic">–</div><div class="stat-label">SEMANTIC FACTS</div></div>
+            <div><div class="stat-num" style="color:var(--gold)" id="statProcedural">–</div><div class="stat-label">PROCEDURAL SKILLS</div></div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="episodic" onclick="selectTab('episodic')">EPISODIC</button>
+            <button class="tab-btn" data-tab="semantic" onclick="selectTab('semantic')">SEMANTIC</button>
+            <button class="tab-btn" data-tab="procedural" onclick="selectTab('procedural')">PROCEDURAL</button>
+        </div>
+
+        <div class="tab-panel active" id="panel-episodic"><p class="empty-state">awaiting record retrieval...</p></div>
+        <div class="tab-panel" id="panel-semantic"></div>
+        <div class="tab-panel" id="panel-procedural"></div>
+    </div>
+</div>
+
+<script>
+let currentRun = "sleep";
+
+function escapeHtml(s) {
+    const d = document.createElement("div");
+    d.innerText = s;
+    return d.innerHTML;
+}
+
+function selectRun(run) {
+    currentRun = run;
+    document.querySelectorAll(".switch-btn").forEach(el => el.classList.toggle("active", el.dataset.run === run));
+    loadWave();
+}
+
+function selectTab(tab) {
+    document.querySelectorAll(".tab-btn").forEach(el => el.classList.toggle("active", el.dataset.tab === tab));
+    document.querySelectorAll(".tab-panel").forEach(el => el.classList.toggle("active", el.id === "panel-" + tab));
+}
+
+async function loadSleepLog() {
+    const res = await fetch(`/api/sleep-log`);
+    const data = await res.json();
+    const container = document.getElementById("sleepLogContainer");
+    if (!data.length) {
+        container.innerHTML = '<p class="empty-state">no sleep log found.</p>';
+        return;
+    }
+
+    container.innerHTML = data.map((entry, i) => {
+        const time = (entry.timestamp || "").slice(0, 19).replace("T", " ");
+        const c = entry.consolidation || {};
+        const f = entry.forgetting || {};
+        const totalForgotten = (f.episodic?.forgotten || 0) + (f.semantic?.forgotten || 0) + (f.procedural?.forgotten || 0);
+        return `<div class="sleep-entry">
+            <div class="sleep-time">CYCLE ${String(i+1).padStart(2,"0")}<br>${time}</div>
+            <div class="sleep-stat" style="color:var(--forest)">extracted: <span class="num">${c.facts_extracted ?? 0}</span> facts, <span class="num">${c.skills_extracted ?? 0}</span> skills</div>
+            <div class="sleep-stat" style="color:var(--rust)">superseded: <span class="num">${c.facts_superseded ?? 0}</span></div>
+            <div class="sleep-stat" style="color:var(--gold)">forgotten: <span class="num">${totalForgotten}</span></div>
+        </div>`;
+    }).join("");
+}
+
+async function loadWave() {
+    const res = await fetch(`/api/benchmark?run=${currentRun}`);
+    const data = await res.json();
+    const container = document.getElementById("waveContainer");
+    if (!data.length) {
+        container.innerHTML = '<p class="empty-state">no benchmark run found for this option.</p>';
+        return;
+    }
+
+    const width = 900, height = 200, padL = 30, padR = 30, padT = 30, padB = 30;
+    const plotW = width - padL - padR, plotH = height - padT - padB;
+    const n = data.length;
+    const step = plotW / Math.max(n - 1, 1);
+
+    const points = data.map((d, i) => ({
+        x: padL + i * step,
+        y: padT + (100 - d.rate) / 100 * plotH,
+        session: d.session,
+        rate: d.rate,
+    }));
+
+    let stepPath = `M ${points[0].x.toFixed(1)},${points[0].y.toFixed(1)}`;
+    for (let i = 1; i < points.length; i++) {
+        stepPath += ` H ${points[i].x.toFixed(1)} V ${points[i].y.toFixed(1)}`;
+    }
+
+    let gridLines = "";
+    [0, 20, 40, 60, 80, 100].forEach(v => {
+        const y = padT + (100 - v) / 100 * plotH;
+        gridLines += `<line x1="${padL}" y1="${y}" x2="${width-padR}" y2="${y}" stroke="#D8CFB8" stroke-width="1" stroke-dasharray="2,3" />`;
+        gridLines += `<text x="${padL-8}" y="${y+3}" text-anchor="end" font-family="Courier Prime, monospace" font-size="9" fill="#8A7F66">${v}</text>`;
+    });
+
+    let circles = "", labels = "";
+    points.forEach(p => {
+        circles += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="#E5DCC8" stroke="#1B3A6B" stroke-width="2" />`;
+        labels += `<text x="${p.x.toFixed(1)}" y="${(p.y-12).toFixed(1)}" text-anchor="middle" font-family="Special Elite, monospace" font-size="13" fill="#1B3A6B">${p.rate.toFixed(0)}%</text>`;
+        labels += `<text x="${p.x.toFixed(1)}" y="${height-8}" text-anchor="middle" font-family="Courier Prime, monospace" font-size="9" fill="#6B5E45">S${p.session}</text>`;
+    });
+
+    container.innerHTML = `
+    <svg viewBox="0 0 ${width} ${height}" style="width:100%; height:auto;">
+        ${gridLines}
+        <path d="${stepPath}" fill="none" stroke="#1B3A6B" stroke-width="2" />
+        ${circles}${labels}
+    </svg>`;
+}
+
+function renderEpisodicCard(item, i) {
+    const content = item.content || "";
+    const [qPart, aPart] = content.split("\nA:");
+    const q = (qPart || "").replace("Q:", "").trim();
+    const a = (aPart || content).trim();
+    const meta = item.metadata || {};
+    const tag = meta.convention_tag || "untagged";
+    const consolidated = meta.consolidated;
+    const timestamp = (meta.timestamp || "").slice(0, 19);
+    const badgeClass = consolidated ? "mem-chip consolidated" : "mem-chip";
+    const badgeText = consolidated ? "consolidated" : "raw";
+    const shortA = a.length > 400 ? a.slice(0, 400) + "..." : a;
+
+    return `<div class="ep-card">
+        <div class="ep-label">SPECIMEN NO. ${String(i+1).padStart(3,"0")} — QUERY</div>
+        <div class="ep-q">${escapeHtml(q)}</div>
+        <hr class="ep-divider" />
+        <div class="ep-label" style="color:var(--ink-dim);">RESPONSE</div>
+        <div class="ep-a">${escapeHtml(shortA)}</div>
+        <div class="ep-meta">
+            <span class="mem-chip">tag: ${escapeHtml(tag)}</span>
+            <span class="mem-chip">${timestamp}</span>
+            <span class="${badgeClass}">${badgeText}</span>
+        </div>
+    </div>`;
+}
+
+function renderSemanticCard(item, i) {
+    const meta = item.metadata || {};
+    const tag = meta.convention_tag || "untagged";
+    const importance = meta.importance ?? "-";
+    return `<div class="sem-card">
+        <div class="sem-idx">RECORD NO. ${String(i+1).padStart(3,"0")}</div>
+        <div class="sem-text">${escapeHtml(item.content || "")}</div>
+        <div class="sem-meta">
+            <span class="mem-chip">tag: ${escapeHtml(tag)}</span>
+            <span class="mem-chip">importance: ${importance}</span>
+        </div>
+    </div>`;
+}
+
+function renderProceduralChip(item, i) {
+    const meta = item.metadata || {};
+    const tag = (meta.convention_tag || "untagged").toString().toUpperCase();
+    return `<div class="proc-chip">
+        <div class="proc-icon">FOLDER ${String(i+1).padStart(2,"0")} · ${escapeHtml(tag)}</div>
+        <div class="proc-text">${escapeHtml(item.content || "")}</div>
+    </div>`;
+}
+
+async function loadAll() {
+    const path = document.getElementById("pathInput").value;
+
+    const statsRes = await fetch(`/api/stats?path=${encodeURIComponent(path)}`);
+    const stats = await statsRes.json();
+    document.getElementById("statEpisodic").innerText = stats.episodic;
+    document.getElementById("statSemantic").innerText = stats.semantic;
+    document.getElementById("statProcedural").innerText = stats.procedural;
+
+    const episodicRes = await fetch(`/api/memory/episodic?path=${encodeURIComponent(path)}`);
+    const episodicData = await episodicRes.json();
+    document.getElementById("panel-episodic").innerHTML = episodicData.length
+        ? episodicData.map(renderEpisodicCard).join("")
+        : '<p class="empty-state">no episodic memories found.</p>';
+
+    const semanticRes = await fetch(`/api/memory/semantic?path=${encodeURIComponent(path)}`);
+    const semanticData = await semanticRes.json();
+    document.getElementById("panel-semantic").innerHTML = semanticData.length
+        ? semanticData.map(renderSemanticCard).join("")
+        : '<p class="empty-state">no semantic facts found.</p>';
+
+    const proceduralRes = await fetch(`/api/memory/procedural?path=${encodeURIComponent(path)}`);
+    const proceduralData = await proceduralRes.json();
+    document.getElementById("panel-procedural").innerHTML = proceduralData.length
+        ? `<div class="proc-grid">${proceduralData.map(renderProceduralChip).join("")}</div>`
+        : '<p class="empty-state">no procedural skills found.</p>';
+
+    loadWave();
+}
+
+loadWave();
+loadSleepLog();
+</script>
+</body>
+</html>
