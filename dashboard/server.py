@@ -7,6 +7,7 @@ from collections import defaultdict
 
 from fastapi import FastAPI, Query
 from fastapi.responses import HTMLResponse
+from pydantic import BaseModel
 
 from src.memory.stores import EpisodicStore, SemanticStore, ProceduralStore
 
@@ -110,3 +111,26 @@ def get_sleep_log(log_path: str = Query("benchmark/sleep_log.json")):
         return []
     import json
     return json.loads(p.read_text(encoding="utf-8"))
+
+
+class ChatRequest(BaseModel):
+    """Request body for the chat endpoint."""
+    question: str
+    persist_path: str = "./chroma_db_sleep"
+    session_id: str = "dashboard_chat"
+
+
+@app.post("/api/chat")
+def chat(req: ChatRequest):
+    """Send a question to the agent and return its answer.
+
+    Args:
+        req: The chat request containing question, persist_path, and session_id.
+
+    Returns:
+        A dict with the agent's answer text.
+    """
+    from src.agent.agent import MemoardAgent
+    agent = MemoardAgent(persist_path=req.persist_path, session_id=req.session_id)
+    answer = agent.answer(req.question)
+    return {"answer": answer}

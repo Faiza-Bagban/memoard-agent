@@ -148,6 +148,39 @@ hr.section-divider { border: none; border-top: 1px dashed var(--border); margin:
 .proc-text { font-size: 0.82rem; color: var(--ink); line-height: 1.45; }
 
 .empty-state { color: var(--ink-dim); font-size: 0.85rem; }
+
+
+.chat-panel { border: 1px solid var(--navy); border-radius: 3px; padding: 16px 20px; margin-bottom: 20px; background: var(--paper-2); }
+.chat-log { max-height: 320px; overflow-y: auto; margin-bottom: 12px; }
+.chat-msg { margin-bottom: 12px; padding: 10px 14px; border-radius: 3px; font-size: 0.85rem; line-height: 1.5; }
+.chat-msg.user { background: var(--paper-3); border: 1px dashed var(--border); color: var(--ink); }
+.chat-msg.agent { background: rgba(27,58,107,0.06); border: 1px solid var(--navy); color: var(--ink); }
+.chat-msg .role-label { font-size: 0.65rem; letter-spacing: 0.1em; color: var(--ink-dim); margin-bottom: 4px; }
+.chat-input-row { display: flex; gap: 8px; }
+#chatInput {
+    flex: 1;
+    background: var(--paper-3);
+    color: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 9px 12px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.85rem;
+}
+#chatSendBtn {
+    background: var(--navy);
+    color: var(--paper-3);
+    border: none;
+    border-radius: 2px;
+    padding: 9px 20px;
+    font-weight: 700;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.78rem;
+    cursor: pointer;
+}
+#chatSendBtn:hover { filter: brightness(1.15); }
+#chatSendBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+.chat-hint { font-size: 0.72rem; color: var(--ink-dim); margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -178,6 +211,19 @@ hr.section-divider { border: none; border-top: 1px dashed var(--border); margin:
         <p class="wave-caption">taught once. retained across every session after.</p>
 
         <hr class="section-divider" />
+
+        <div class="eyebrow">LIVE CONSULTATION — ASK THE AGENT</div>
+        <div class="chat-panel">
+            <div class="chat-log" id="chatLog"><p class="empty-state">no messages yet. ask a coding question below.</p></div>
+            <div class="chat-input-row">
+                <input id="chatInput" type="text" placeholder="e.g. how should I name a test file for orders.py?" onkeydown="if(event.key==='Enter') sendChat()" />
+                <button id="chatSendBtn" onclick="sendChat()">ASK</button>
+            </div>
+            <p class="chat-hint">responses are written back to episodic memory in real time — reload memory below to see the new record.</p>
+        </div>
+
+        <hr class="section-divider" />
+
 
         <div class="eyebrow">SLEEP CYCLE LOG — CONSOLIDATION HISTORY</div>
         <div id="sleepLogContainer" style="margin-bottom: 20px;"><p class="empty-state">no sleep log found.</p></div>
@@ -220,6 +266,39 @@ function selectRun(run) {
 function selectTab(tab) {
     document.querySelectorAll(".tab-btn").forEach(el => el.classList.toggle("active", el.dataset.tab === tab));
     document.querySelectorAll(".tab-panel").forEach(el => el.classList.toggle("active", el.id === "panel-" + tab));
+}
+
+async function sendChat() {
+    const input = document.getElementById("chatInput");
+    const btn = document.getElementById("chatSendBtn");
+    const question = input.value.trim();
+    if (!question) return;
+
+    const log = document.getElementById("chatLog");
+    if (log.querySelector(".empty-state")) log.innerHTML = "";
+
+    log.innerHTML += `<div class="chat-msg user"><div class="role-label">YOU</div>${escapeHtml(question)}</div>`;
+    input.value = "";
+    btn.disabled = true;
+    btn.innerText = "THINKING...";
+    log.scrollTop = log.scrollHeight;
+
+    try {
+        const path = document.getElementById("pathInput").value;
+        const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question, persist_path: path, session_id: "dashboard_chat" }),
+        });
+        const data = await res.json();
+        log.innerHTML += `<div class="chat-msg agent"><div class="role-label">AGENT</div>${escapeHtml(data.answer || "no response")}</div>`;
+    } catch (e) {
+        log.innerHTML += `<div class="chat-msg agent"><div class="role-label">AGENT</div>error reaching agent: ${escapeHtml(String(e))}</div>`;
+    }
+
+    btn.disabled = false;
+    btn.innerText = "ASK";
+    log.scrollTop = log.scrollHeight;
 }
 
 async function loadSleepLog() {
